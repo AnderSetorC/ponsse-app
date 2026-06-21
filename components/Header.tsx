@@ -12,6 +12,7 @@ export default function Header({ showAdminLink = false }: Props) {
   const [hoje, setHoje] = useState<string>("");
 
   useEffect(() => {
+    // Usa a data completa
     setHoje(
       new Date().toLocaleDateString("pt-BR", {
         weekday: "long",
@@ -54,7 +55,8 @@ export default function Header({ showAdminLink = false }: Props) {
             href="/"
             className="text-xs sm:text-sm text-gray-400 hover:text-ponsse-yellow transition-colors px-3 py-2 rounded border border-gray-700 hover:border-ponsse-yellow flex-shrink-0"
           >
-            ← Voltar para a página principal
+            <span className="hidden sm:inline">← Voltar para a página principal</span>
+            <span className="sm:hidden">← Voltar</span>
           </Link>
         ) : null}
       </div>

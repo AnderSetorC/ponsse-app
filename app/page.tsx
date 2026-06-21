@@ -84,20 +84,30 @@ export default function Home() {
     <div className="min-h-screen flex flex-col">
       <Header showAdminLink={false} />
 
-      <main className="flex-1 max-w-6xl w-full mx-auto px-4 py-8">
+      <main className="flex-1 max-w-6xl w-full mx-auto px-3 sm:px-4 py-6 sm:py-8">
         {/* Hero / Status */}
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">
+        <div className="mb-6 sm:mb-8 text-center">
+          <h1 className="text-2xl sm:text-4xl font-bold text-white mb-2 px-2">
             Quem está disponível agora
           </h1>
           {agora && (
-            <p className="text-sm text-gray-400">
-              {agora.toLocaleDateString("pt-BR", {
-                weekday: "long",
-                day: "2-digit",
-                month: "long",
-              })}{" "}
-              • {agora.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}
+            <p className="text-xs sm:text-sm text-gray-400 px-2">
+              <span className="hidden sm:inline">
+                {agora.toLocaleDateString("pt-BR", {
+                  weekday: "long",
+                  day: "2-digit",
+                  month: "long",
+                })}{" "}
+                •{" "}
+              </span>
+              <span className="sm:hidden">
+                {agora.toLocaleDateString("pt-BR", {
+                  day: "2-digit",
+                  month: "2-digit",
+                })}{" "}
+                •{" "}
+              </span>
+              {agora.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}
             </p>
           )}
           <div className="mt-4 flex items-center justify-center gap-2 flex-wrap">

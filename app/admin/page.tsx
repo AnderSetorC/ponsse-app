@@ -145,11 +145,11 @@ function AdminConteudo() {
     <div className="min-h-screen flex flex-col">
       <Header showAdminLink={true} />
 
-      <main className="flex-1 max-w-4xl w-full mx-auto px-4 py-6">
-        <div className="mb-6 flex items-center justify-between flex-wrap gap-2">
-          <div>
-            <h1 className="text-2xl font-bold text-white">Painel Administrativo</h1>
-            <p className="text-sm text-gray-400">
+      <main className="flex-1 max-w-4xl w-full mx-auto px-3 sm:px-4 py-4 sm:py-6">
+        <div className="mb-6 flex items-start justify-between flex-wrap gap-3">
+          <div className="min-w-0 flex-1">
+            <h1 className="text-xl sm:text-2xl font-bold text-white">Painel Administrativo</h1>
+            <p className="text-xs sm:text-sm text-gray-400">
               Configure quem está disponível para atendimento
             </p>
           </div>
@@ -208,34 +208,37 @@ function AdminConteudo() {
         )}
 
         {/* Ações rápidas */}
-        <div className="mb-6 p-4 bg-ponsse-dark border border-gray-700 rounded-xl">
+        <div className="mb-6 p-3 sm:p-4 bg-ponsse-dark border border-gray-700 rounded-xl">
           <p className="text-xs text-gray-400 uppercase tracking-wider mb-2 font-bold">
             ⚡ Ações rápidas
           </p>
           <div className="flex flex-wrap gap-2">
             <button
               onClick={ativarTodos}
-              className="text-sm bg-green-500/20 text-green-400 border border-green-500/30 px-3 py-1.5 rounded-lg hover:bg-green-500/30"
+              className="text-xs sm:text-sm bg-green-500/20 text-green-400 border border-green-500/30 px-3 py-1.5 rounded-lg hover:bg-green-500/30 flex-1 sm:flex-none"
             >
-              ✓ Iniciar dia (ativar todos)
+              <span className="hidden sm:inline">✓ Iniciar dia (ativar todos)</span>
+              <span className="sm:hidden">✓ Iniciar dia</span>
             </button>
             <button
               onClick={desativarTodos}
-              className="text-sm bg-gray-700 text-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-600"
+              className="text-xs sm:text-sm bg-gray-700 text-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-600 flex-1 sm:flex-none"
             >
-              ○ Encerrar dia (desativar todos)
+              <span className="hidden sm:inline">○ Encerrar dia (desativar todos)</span>
+              <span className="sm:hidden">○ Encerrar dia</span>
             </button>
             <button
               onClick={visiveisTodos}
-              className="text-sm bg-blue-500/20 text-blue-300 border border-blue-500/30 px-3 py-1.5 rounded-lg hover:bg-blue-500/30"
+              className="text-xs sm:text-sm bg-blue-500/20 text-blue-300 border border-blue-500/30 px-3 py-1.5 rounded-lg hover:bg-blue-500/30 flex-1 sm:flex-none"
             >
-              👁 Mostrar todos
+              <span className="hidden sm:inline">👁 Mostrar todos</span>
+              <span className="sm:hidden">👁 Mostrar</span>
             </button>
             <button
               onClick={() => setShowHelp((s) => !s)}
-              className="text-sm bg-yellow-500/20 text-yellow-300 border border-yellow-500/30 px-3 py-1.5 rounded-lg hover:bg-yellow-500/30 ml-auto"
+              className="text-xs sm:text-sm bg-yellow-500/20 text-yellow-300 border border-yellow-500/30 px-3 py-1.5 rounded-lg hover:bg-yellow-500/30 sm:ml-auto"
             >
-              {showHelp ? "✕ Fechar ajuda" : "💡 Como usar"}
+              {showHelp ? "✕ Fechar" : "💡 Ajuda"}
             </button>
           </div>
         </div>

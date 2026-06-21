@@ -77,14 +77,14 @@ export default function AdminRow({ func, onChange, onDelete }: Props) {
           {!edit ? (
             <>
               <div className="flex items-start justify-between gap-2 flex-wrap">
-                <div>
+                <div className="min-w-0 flex-1">
                   <h3 className="text-lg font-bold text-white">{func.nome}</h3>
                   <p className="text-sm text-ponsse-yellow">{func.setor}</p>
                 </div>
-                <div className="flex items-center gap-2 flex-wrap">
+                <div className="flex items-center gap-1.5 flex-wrap w-full sm:w-auto">
                   <button
                     onClick={() => onChange({ ...func, visivel: !func.visivel })}
-                    className={`text-xs font-bold px-3 py-1.5 rounded-full transition-all ${
+                    className={`text-[11px] sm:text-xs font-bold px-2.5 sm:px-3 py-1.5 rounded-full transition-all flex-1 sm:flex-none ${
                       func.visivel
                         ? "bg-blue-500 text-white hover:bg-blue-600"
                         : "bg-gray-700 text-gray-300 hover:bg-gray-600"
@@ -95,7 +95,7 @@ export default function AdminRow({ func, onChange, onDelete }: Props) {
                   </button>
                   <button
                     onClick={() => onChange({ ...func, ativo: !func.ativo })}
-                    className={`text-xs font-bold px-3 py-1.5 rounded-full transition-all ${
+                    className={`text-[11px] sm:text-xs font-bold px-2.5 sm:px-3 py-1.5 rounded-full transition-all flex-1 sm:flex-none ${
                       func.ativo
                         ? "bg-green-500 text-white hover:bg-green-600"
                         : "bg-gray-700 text-gray-300 hover:bg-gray-600"
@@ -109,7 +109,7 @@ export default function AdminRow({ func, onChange, onDelete }: Props) {
                       setDraft(func);
                       setEdit(true);
                     }}
-                    className="text-xs px-3 py-1.5 rounded-full bg-ponsse-yellow text-ponsse-black font-bold hover:bg-yellow-400"
+                    className="text-[11px] sm:text-xs px-2.5 sm:px-3 py-1.5 rounded-full bg-ponsse-yellow text-ponsse-black font-bold hover:bg-yellow-400 flex-1 sm:flex-none"
                   >
                     Editar
                   </button>
@@ -117,7 +117,7 @@ export default function AdminRow({ func, onChange, onDelete }: Props) {
                     onClick={() => {
                       if (confirm(`Remover ${func.nome}?`)) onDelete(func.id);
                     }}
-                    className="text-xs px-3 py-1.5 rounded-full bg-red-500/20 text-red-400 border border-red-500/30 hover:bg-red-500/30"
+                    className="text-[11px] sm:text-xs px-2.5 sm:px-3 py-1.5 rounded-full bg-red-500/20 text-red-400 border border-red-500/30 hover:bg-red-500/30 flex-1 sm:flex-none"
                   >
                     Remover
                   </button>
@@ -127,7 +127,7 @@ export default function AdminRow({ func, onChange, onDelete }: Props) {
               <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 gap-2 text-sm">
                 <div>
                   <span className="text-gray-500 text-xs">Telefone</span>
-                  <p className="text-white">{func.telefone}</p>
+                  <p className="text-white break-all">{func.telefone}</p>
                 </div>
                 <div>
                   <span className="text-gray-500 text-xs">Horário</span>
@@ -135,7 +135,7 @@ export default function AdminRow({ func, onChange, onDelete }: Props) {
                     {func.horarioInicio} - {func.horarioFim}
                   </p>
                 </div>
-                <div>
+                <div className="col-span-2 sm:col-span-1">
                   <span className="text-gray-500 text-xs">Foto</span>
                   <p className="text-white break-all">
                     {func.foto ? "✓ carregada" : "—"}
