@@ -1,0 +1,119 @@
+"use client";
+
+import Image from "next/image";
+import { useState } from "react";
+import { Funcionario } from "@/lib/types";
+import {
+  corAvatar,
+  estaDisponivel,
+  getIniciais,
+} from "@/lib/funcionarios";
+import MensagemModal from "./MensagemModal";
+
+export default function FuncionarioCard({
+  func,
+  agora,
+  setoresDisponiveis,
+}: {
+  func: Funcionario;
+  agora: Date;
+  setoresDisponiveis: string[];
+}) {
+  const disponivel = estaDisponivel(func, agora);
+  const [modalAberto, setModalAberto] = useState(false);
+
+  function handleClick() {
+    if (!disponivel) return;
+    setModalAberto(true);
+  }
+
+  return (
+    <>
+      <div
+        className={`relative bg-ponsse-dark rounded-2xl border-2 overflow-hidden transition-all ${
+          disponivel
+            ? "border-green-500 shadow-lg shadow-green-500/20 hover:scale-[1.02] cursor-pointer"
+            : "border-gray-700 opacity-70"
+        }`}
+        onClick={handleClick}
+        role={disponivel ? "button" : undefined}
+      >
+        {/* Status indicator */}
+        <div className="absolute top-3 right-3 flex items-center gap-2 bg-ponsse-black/80 backdrop-blur-sm px-2.5 py-1 rounded-full">
+          <span
+            className={`w-2.5 h-2.5 rounded-full ${
+              disponivel ? "bg-green-500 pulse-online" : "bg-gray-500"
+            }`}
+          />
+          <span
+            className={`text-[10px] font-semibold uppercase tracking-wider ${
+              disponivel ? "text-green-400" : "text-gray-500"
+            }`}
+          >
+            {disponivel ? "Online" : "Offline"}
+          </span>
+        </div>
+
+        <div className="p-6 flex flex-col items-center text-center">
+          {/* Foto / Avatar */}
+          <div className="mb-4 relative">
+            {func.foto ? (
+              <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-ponsse-yellow">
+                <Image
+                  src={func.foto}
+                  alt={func.nome}
+                  width={96}
+                  height={96}
+                  className="object-cover w-full h-full"
+                />
+              </div>
+            ) : (
+              <div
+                className="w-24 h-24 rounded-full flex items-center justify-center text-2xl font-bold text-ponsse-black border-4 border-ponsse-yellow"
+                style={{ backgroundColor: corAvatar(func.nome) }}
+              >
+                {getIniciais(func.nome)}
+              </div>
+            )}
+          </div>
+
+          {/* Nome e Setor */}
+          <h3 className="text-lg font-bold text-white mb-1 leading-tight">
+            {func.nome}
+          </h3>
+          <p className="text-sm text-ponsse-yellow font-medium mb-3">
+            {func.setor}
+          </p>
+
+          {/* Horário */}
+          <p className="text-xs text-gray-400 mb-4">
+            Horário: {func.horarioInicio} - {func.horarioFim}
+          </p>
+
+          {/* Botão de ligar / WhatsApp */}
+          <div
+            className={`w-full py-3 px-4 rounded-xl font-bold text-sm transition-all ${
+              disponivel
+                ? "bg-ponsse-yellow text-ponsse-black hover:bg-yellow-400 active:scale-95"
+                : "bg-gray-700 text-gray-400 cursor-not-allowed"
+            }`}
+          >
+            {disponivel ? "Falar agora" : "Indisponível"}
+          </div>
+
+          <p className="text-[10px] text-gray-500 mt-2 break-all">
+            {func.telefone}
+          </p>
+        </div>
+      </div>
+
+      {modalAberto && (
+        <MensagemModal
+          func={func}
+          setoresDisponiveis={setoresDisponiveis}
+          onClose={() => setModalAberto(false)}
+        />
+      )}
+    </>
+  );
+}
