@@ -4,10 +4,7 @@ import { useEffect, useState } from "react";
 import Header from "@/components/Header";
 import FuncionarioCard from "@/components/FuncionarioCard";
 import { Funcionario } from "@/lib/types";
-import {
-  carregarFuncionariosAPI,
-  carregarSetoresAPI,
-} from "@/lib/api";
+import { carregarDados } from "@/lib/api";
 
 export default function Home() {
   const [funcionarios, setFuncionarios] = useState<Funcionario[]>([]);
@@ -17,12 +14,9 @@ export default function Home() {
 
   useEffect(() => {
     async function carregar() {
-      const [funcs, sets] = await Promise.all([
-        carregarFuncionariosAPI(),
-        carregarSetoresAPI(),
-      ]);
-      setFuncionarios(funcs);
-      setSetoresAdmin(sets);
+      const dados = await carregarDados();
+      setFuncionarios(dados.funcionarios);
+      setSetoresAdmin(dados.setores);
       setCarregado(true);
     }
     carregar();

@@ -1,122 +1,40 @@
-import {
-  Funcionario,
-  STORAGE_KEY,
-  SETORES_KEY,
-  funcionariosIniciais,
-  setoresDefault,
-} from "./types";
+import { Funcionario } from "./types";
 
-const USE_LOCAL_KEY = "ponsse:usarLocal";
+type DadosAPI = {
+  funcionarios: Funcionario[];
+  setores: string[];
+  origem?: "github" | "iniciais";
+};
 
-// Detecta se estamos em produção (com KV) ou local (sem KV)
-async function deveUsarLocal(): Promise<boolean> {
-  if (typeof window === "undefined") return true;
-  // Cache da decisão pra não fazer ping a cada operação
-  const cached = sessionStorage.getItem(USE_LOCAL_KEY);
-  if (cached === "1") return true;
-  if (cached === "0") return false;
+const ENDPOINT = "/api/dados";
+
+export async function carregarDados(): Promise<DadosAPI> {
   try {
-    const res = await fetch("/api/funcionarios", { cache: "no-store" });
-    const data = await res.json();
-    if (data && (data as any).__local) {
-      sessionStorage.setItem(USE_LOCAL_KEY, "1");
-      return true;
-    }
-    sessionStorage.setItem(USE_LOCAL_KEY, "0");
-    return false;
+    const res = await fetch(ENDPOINT, { cache: "no-store" });
+    if (!res.ok) throw new Error("Falha ao carregar");
+    return (await res.json()) as DadosAPI;
   } catch {
-    sessionStorage.setItem(USE_LOCAL_KEY, "1");
-    return true;
+    // Em dev local sem nada configurado, retorna vazio
+    return { funcionarios: [], setores: [], origem: "iniciais" };
   }
 }
 
-// ---------------- FUNCIONÁRIOS ----------------
-
-export async function carregarFuncionariosAPI(): Promise<Funcionario[]> {
-  const local = await deveUsarLocal();
-  if (local) {
-    return carregarLocal();
-  }
+export async function salvarDados(dados: {
+  funcionarios: Funcionario[];
+  setores: string[];
+}): Promise<{ ok: boolean; error?: string }> {
   try {
-    const res = await fetch("/api/funcionarios", { cache: "no-store" });
-    return (await res.json()) as Funcionario[];
-  } catch {
-    return carregarLocal();
-  }
-}
-
-export async function salvarFuncionariosAPI(lista: Funcionario[]) {
-  const local = await deveUsarLocal();
-  if (local) {
-    if (typeof window !== "undefined") {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(lista));
-    }
-    return;
-  }
-  try {
-    await fetch("/api/funcionarios", {
+    const res = await fetch(ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(lista),
+      body: JSON.stringify(dados),
     });
+    if (!res.ok) {
+      const err = (await res.json().catch(() => ({}))) as { error?: string };
+      return { ok: false, error: err.error || `HTTP ${res.status}` };
+    }
+    return { ok: true };
   } catch (err) {
-    // silencioso
-  }
-}
-
-// ---------------- SETORES ----------------
-
-export async function carregarSetoresAPI(): Promise<string[]> {
-  const local = await deveUsarLocal();
-  if (local) {
-    if (typeof window === "undefined") return setoresDefault;
-    const raw = localStorage.getItem(SETORES_KEY);
-    if (!raw) {
-      localStorage.setItem(SETORES_KEY, JSON.stringify(setoresDefault));
-      return setoresDefault;
-    }
-    return JSON.parse(raw) as string[];
-  }
-  try {
-    const res = await fetch("/api/setores", { cache: "no-store" });
-    return (await res.json()) as string[];
-  } catch {
-    return setoresDefault;
-  }
-}
-
-export async function salvarSetoresAPI(setores: string[]) {
-  const local = await deveUsarLocal();
-  if (local) {
-    if (typeof window !== "undefined") {
-      localStorage.setItem(SETORES_KEY, JSON.stringify(setores));
-    }
-    return;
-  }
-  try {
-    await fetch("/api/setores", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(setores),
-    });
-  } catch (err) {
-    // silencioso
-  }
-}
-
-// ---------------- FALLBACK LOCAL ----------------
-
-function carregarLocal(): Funcionario[] {
-  if (typeof window === "undefined") return funcionariosIniciais;
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(funcionariosIniciais));
-      return funcionariosIniciais;
-    }
-    const parsed = JSON.parse(raw) as Funcionario[];
-    return parsed.map((f) => ({ ...f, visivel: f.visivel ?? true }));
-  } catch {
-    return funcionariosIniciais;
+    return { ok: false, error: String(err) };
   }
 }

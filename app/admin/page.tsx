@@ -6,12 +6,7 @@ import AdminRow from "@/components/AdminRow";
 import SetoresManager from "@/components/SetoresManager";
 import { Funcionario } from "@/lib/types";
 import { novoId } from "@/lib/funcionarios";
-import {
-  carregarFuncionariosAPI,
-  carregarSetoresAPI,
-  salvarFuncionariosAPI,
-  salvarSetoresAPI,
-} from "@/lib/api";
+import { carregarDados, salvarDados } from "@/lib/api";
 
 export default function AdminPage() {
   const [lista, setLista] = useState<Funcionario[]>([]);
@@ -25,35 +20,39 @@ export default function AdminPage() {
     horarioFim: "18:00",
   });
   const [salvoEm, setSalvoEm] = useState<string | null>(null);
+  const [erroSalv, setErroSalv] = useState<string | null>(null);
   const [showHelp, setShowHelp] = useState(false);
 
   useEffect(() => {
     async function carregar() {
-      const [funcs, sets] = await Promise.all([
-        carregarFuncionariosAPI(),
-        carregarSetoresAPI(),
-      ]);
-      setLista(funcs);
-      setSetores(sets);
+      const dados = await carregarDados();
+      setLista(dados.funcionarios);
+      setSetores(dados.setores);
       setCarregado(true);
     }
     carregar();
   }, []);
 
-  async function persistir(nova: Funcionario[]) {
+  async function persistirFuncionarios(nova: Funcionario[]) {
     setLista(nova);
-    await salvarFuncionariosAPI(nova);
-    setSalvoEm(new Date().toLocaleTimeString("pt-BR"));
-    setTimeout(() => setSalvoEm(null), 2000);
+    const r = await salvarDados({ funcionarios: nova, setores });
+    if (r.ok) {
+      setSalvoEm(new Date().toLocaleTimeString("pt-BR"));
+      setErroSalv(null);
+      setTimeout(() => setSalvoEm(null), 2000);
+    } else {
+      setErroSalv(r.error || "Erro ao salvar");
+      setTimeout(() => setErroSalv(null), 5000);
+    }
   }
 
   function atualizar(func: Funcionario) {
-    persistir(lista.map((f) => (f.id === func.id ? func : f)));
+    persistirFuncionarios(lista.map((f) => (f.id === func.id ? func : f)));
   }
 
   function remover(id: string) {
     if (!confirm("Remover este funcionário?")) return;
-    persistir(lista.filter((f) => f.id !== id));
+    persistirFuncionarios(lista.filter((f) => f.id !== id));
   }
 
   function adicionar() {
@@ -71,7 +70,7 @@ export default function AdminPage() {
       horarioInicio: novo.horarioInicio,
       horarioFim: novo.horarioFim,
     };
-    persistir([...lista, f]);
+    persistirFuncionarios([...lista, f]);
     setNovo({
       nome: "",
       setor: "",
@@ -82,22 +81,28 @@ export default function AdminPage() {
   }
 
   function ativarTodos() {
-    persistir(lista.map((f) => ({ ...f, ativo: true })));
+    persistirFuncionarios(lista.map((f) => ({ ...f, ativo: true })));
   }
 
   function desativarTodos() {
-    persistir(lista.map((f) => ({ ...f, ativo: false })));
+    persistirFuncionarios(lista.map((f) => ({ ...f, ativo: false })));
   }
 
   function visiveisTodos() {
-    persistir(lista.map((f) => ({ ...f, visivel: true })));
+    persistirFuncionarios(lista.map((f) => ({ ...f, visivel: true })));
   }
 
   async function atualizarSetores(novos: string[]) {
     setSetores(novos);
-    await salvarSetoresAPI(novos);
-    setSalvoEm(new Date().toLocaleTimeString("pt-BR"));
-    setTimeout(() => setSalvoEm(null), 2000);
+    const r = await salvarDados({ funcionarios: lista, setores: novos });
+    if (r.ok) {
+      setSalvoEm(new Date().toLocaleTimeString("pt-BR"));
+      setErroSalv(null);
+      setTimeout(() => setSalvoEm(null), 2000);
+    } else {
+      setErroSalv(r.error || "Erro ao salvar");
+      setTimeout(() => setErroSalv(null), 5000);
+    }
   }
 
   const stats = useMemo(() => {
@@ -124,6 +129,11 @@ export default function AdminPage() {
             {salvoEm && (
               <span className="text-xs text-green-400 animate-pulse">
                 ✓ Salvo às {salvoEm}
+              </span>
+            )}
+            {erroSalv && (
+              <span className="text-xs text-red-400" title={erroSalv}>
+                ✕ {erroSalv.length > 40 ? erroSalv.slice(0, 40) + "..." : erroSalv}
               </span>
             )}
           </div>
