@@ -11,15 +11,23 @@ export default function Home() {
   const [setoresAdmin, setSetoresAdmin] = useState<string[]>([]);
   const [agora, setAgora] = useState<Date | null>(null);
   const [carregado, setCarregado] = useState(false);
+  const [atualizando, setAtualizando] = useState(false);
+  const [ultimaAtualizacao, setUltimaAtualizacao] = useState<Date | null>(null);
+
+  async function recarregar(silencioso = false) {
+    if (!silencioso) setAtualizando(true);
+    const dados = await carregarDados();
+    setFuncionarios(dados.funcionarios);
+    setSetoresAdmin(dados.setores);
+    setCarregado(true);
+    setUltimaAtualizacao(new Date());
+    if (!silencioso) {
+      setTimeout(() => setAtualizando(false), 600);
+    }
+  }
 
   useEffect(() => {
-    async function carregar() {
-      const dados = await carregarDados();
-      setFuncionarios(dados.funcionarios);
-      setSetoresAdmin(dados.setores);
-      setCarregado(true);
-    }
-    carregar();
+    recarregar(true);
     setAgora(new Date());
 
     // Atualiza o "agora" a cada minuto
@@ -28,12 +36,12 @@ export default function Home() {
     }, 60000);
 
     // Recarrega dados a cada 30s (pega mudanças feitas pelo admin)
-    const intervalDados = setInterval(carregar, 30000);
+    const intervalDados = setInterval(() => recarregar(true), 30000);
 
     // Recarrega quando a aba volta a ficar visível
     const onVisibility = () => {
       if (document.visibilityState === "visible") {
-        carregar();
+        recarregar(true);
         setAgora(new Date());
       }
     };
@@ -92,12 +100,44 @@ export default function Home() {
               • {agora.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}
             </p>
           )}
-          <div className="mt-4 inline-flex items-center gap-2 bg-ponsse-dark border border-ponsse-yellow/30 px-4 py-2 rounded-full">
-            <span className="w-2.5 h-2.5 rounded-full bg-green-500 pulse-online" />
-            <span className="text-sm font-semibold text-white">
-              {disponiveis} {disponiveis === 1 ? "pessoa disponível" : "pessoas disponíveis"}
-            </span>
+          <div className="mt-4 flex items-center justify-center gap-2 flex-wrap">
+            <div className="inline-flex items-center gap-2 bg-ponsse-dark border border-ponsse-yellow/30 px-4 py-2 rounded-full">
+              <span className="w-2.5 h-2.5 rounded-full bg-green-500 pulse-online" />
+              <span className="text-sm font-semibold text-white">
+                {disponiveis} {disponiveis === 1 ? "pessoa disponível" : "pessoas disponíveis"}
+              </span>
+            </div>
+            <button
+              onClick={() => recarregar(false)}
+              disabled={atualizando}
+              className="inline-flex items-center gap-1.5 text-xs text-gray-400 hover:text-ponsse-yellow px-3 py-2 rounded-full border border-gray-700 hover:border-ponsse-yellow transition-colors disabled:opacity-50"
+              title={
+                ultimaAtualizacao
+                  ? `Última atualização: ${ultimaAtualizacao.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}`
+                  : "Atualizar lista"
+              }
+            >
+              <svg
+                className={`w-3.5 h-3.5 ${atualizando ? "animate-spin" : ""}`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                />
+              </svg>
+              <span>{atualizando ? "Atualizando..." : "Atualizar"}</span>
+            </button>
           </div>
+          {ultimaAtualizacao && (
+            <p className="text-[10px] text-gray-600 mt-2">
+              Atualizado às {ultimaAtualizacao.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}
+            </p>
+          )}
         </div>
 
         {/* Cards */}
