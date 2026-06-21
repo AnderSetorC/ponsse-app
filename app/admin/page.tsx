@@ -5,13 +5,13 @@ import Header from "@/components/Header";
 import AdminRow from "@/components/AdminRow";
 import SetoresManager from "@/components/SetoresManager";
 import { Funcionario } from "@/lib/types";
+import { novoId } from "@/lib/funcionarios";
 import {
-  carregarFuncionarios,
-  carregarSetores,
-  novoId,
-  salvarFuncionarios,
-  salvarSetores,
-} from "@/lib/funcionarios";
+  carregarFuncionariosAPI,
+  carregarSetoresAPI,
+  salvarFuncionariosAPI,
+  salvarSetoresAPI,
+} from "@/lib/api";
 
 export default function AdminPage() {
   const [lista, setLista] = useState<Funcionario[]>([]);
@@ -28,14 +28,21 @@ export default function AdminPage() {
   const [showHelp, setShowHelp] = useState(false);
 
   useEffect(() => {
-    setLista(carregarFuncionarios());
-    setSetores(carregarSetores());
-    setCarregado(true);
+    async function carregar() {
+      const [funcs, sets] = await Promise.all([
+        carregarFuncionariosAPI(),
+        carregarSetoresAPI(),
+      ]);
+      setLista(funcs);
+      setSetores(sets);
+      setCarregado(true);
+    }
+    carregar();
   }, []);
 
-  function persistir(nova: Funcionario[]) {
+  async function persistir(nova: Funcionario[]) {
     setLista(nova);
-    salvarFuncionarios(nova);
+    await salvarFuncionariosAPI(nova);
     setSalvoEm(new Date().toLocaleTimeString("pt-BR"));
     setTimeout(() => setSalvoEm(null), 2000);
   }
@@ -86,9 +93,9 @@ export default function AdminPage() {
     persistir(lista.map((f) => ({ ...f, visivel: true })));
   }
 
-  function atualizarSetores(novos: string[]) {
+  async function atualizarSetores(novos: string[]) {
     setSetores(novos);
-    salvarSetores(novos);
+    await salvarSetoresAPI(novos);
     setSalvoEm(new Date().toLocaleTimeString("pt-BR"));
     setTimeout(() => setSalvoEm(null), 2000);
   }

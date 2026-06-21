@@ -4,7 +4,10 @@ import { useEffect, useState } from "react";
 import Header from "@/components/Header";
 import FuncionarioCard from "@/components/FuncionarioCard";
 import { Funcionario } from "@/lib/types";
-import { carregarFuncionarios, carregarSetores } from "@/lib/funcionarios";
+import {
+  carregarFuncionariosAPI,
+  carregarSetoresAPI,
+} from "@/lib/api";
 
 export default function Home() {
   const [funcionarios, setFuncionarios] = useState<Funcionario[]>([]);
@@ -13,40 +16,38 @@ export default function Home() {
   const [carregado, setCarregado] = useState(false);
 
   useEffect(() => {
-    setFuncionarios(carregarFuncionarios());
-    setSetoresAdmin(carregarSetores());
-    setCarregado(true);
+    async function carregar() {
+      const [funcs, sets] = await Promise.all([
+        carregarFuncionariosAPI(),
+        carregarSetoresAPI(),
+      ]);
+      setFuncionarios(funcs);
+      setSetoresAdmin(sets);
+      setCarregado(true);
+    }
+    carregar();
     setAgora(new Date());
 
     // Atualiza o "agora" a cada minuto
-    const interval = setInterval(() => {
+    const intervalTempo = setInterval(() => {
       setAgora(new Date());
     }, 60000);
 
-    // Também escuta mudanças no localStorage vindas do admin
-    const onStorage = (e: StorageEvent) => {
-      if (!e.key || e.key === "ponsse-funcionarios-v1") {
-        setFuncionarios(carregarFuncionarios());
-      }
-      if (!e.key || e.key === "ponsse-setores-v1") {
-        setSetoresAdmin(carregarSetores());
-      }
-    };
-    window.addEventListener("storage", onStorage);
+    // Recarrega dados a cada 30s (pega mudanças feitas pelo admin)
+    const intervalDados = setInterval(carregar, 30000);
 
     // Recarrega quando a aba volta a ficar visível
     const onVisibility = () => {
       if (document.visibilityState === "visible") {
-        setFuncionarios(carregarFuncionarios());
-        setSetoresAdmin(carregarSetores());
+        carregar();
         setAgora(new Date());
       }
     };
     document.addEventListener("visibilitychange", onVisibility);
 
     return () => {
-      clearInterval(interval);
-      window.removeEventListener("storage", onStorage);
+      clearInterval(intervalTempo);
+      clearInterval(intervalDados);
       document.removeEventListener("visibilitychange", onVisibility);
     };
   }, []);
