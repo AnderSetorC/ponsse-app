@@ -4,11 +4,39 @@ import { useEffect, useMemo, useState } from "react";
 import Header from "@/components/Header";
 import AdminRow from "@/components/AdminRow";
 import SetoresManager from "@/components/SetoresManager";
+import AdminLogin, {
+  verificarAutenticado,
+  logout,
+} from "@/components/AdminLogin";
 import { Funcionario } from "@/lib/types";
 import { novoId } from "@/lib/funcionarios";
 import { carregarDados, salvarDados } from "@/lib/api";
 
 export default function AdminPage() {
+  const [autenticado, setAutenticado] = useState(false);
+  const [verificandoAuth, setVerificandoAuth] = useState(true);
+
+  useEffect(() => {
+    setAutenticado(verificarAutenticado());
+    setVerificandoAuth(false);
+  }, []);
+
+  if (verificandoAuth) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-ponsse-black">
+        <p className="text-gray-400">Carregando...</p>
+      </div>
+    );
+  }
+
+  if (!autenticado) {
+    return <AdminLogin onAutenticado={() => setAutenticado(true)} />;
+  }
+
+  return <AdminConteudo />;
+}
+
+function AdminConteudo() {
   const [lista, setLista] = useState<Funcionario[]>([]);
   const [setores, setSetores] = useState<string[]>([]);
   const [carregado, setCarregado] = useState(false);
@@ -136,6 +164,16 @@ export default function AdminPage() {
                 ✕ {erroSalv.length > 40 ? erroSalv.slice(0, 40) + "..." : erroSalv}
               </span>
             )}
+            <button
+              onClick={() => {
+                logout();
+                location.reload();
+              }}
+              className="text-xs text-gray-400 hover:text-red-400 transition-colors px-3 py-1.5 rounded border border-gray-700 hover:border-red-500/50"
+              title="Sair do painel"
+            >
+              ↪ Sair
+            </button>
           </div>
         </div>
 
