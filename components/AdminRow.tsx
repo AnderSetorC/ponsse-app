@@ -41,7 +41,7 @@ export default function AdminRow({ func, onChange, onDelete }: Props) {
   }
 
   return (
-    <div className="bg-ponsse-dark border border-gray-700 rounded-2xl p-4">
+    <div className="bg-card border border-app rounded-2xl p-4">
       <div className="flex flex-col sm:flex-row gap-4 items-start">
         {/* Foto */}
         <div className="flex-shrink-0">
@@ -72,7 +72,7 @@ export default function AdminRow({ func, onChange, onDelete }: Props) {
             <>
               <div className="flex items-start justify-between gap-2 flex-wrap">
                 <div className="min-w-0 flex-1">
-                  <h3 className="text-lg font-bold text-white">{func.nome}</h3>
+                  <h3 className="text-lg font-bold text-app">{func.nome}</h3>
                   <p className="text-sm text-ponsse-yellow">{func.setor}</p>
                 </div>
                 <div className="flex items-center gap-1.5 flex-wrap w-full sm:w-auto">
@@ -120,18 +120,18 @@ export default function AdminRow({ func, onChange, onDelete }: Props) {
 
               <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 gap-2 text-sm">
                 <div>
-                  <span className="text-gray-500 text-xs">Telefone</span>
-                  <p className="text-white break-all">{func.telefone}</p>
+                  <span className="text-subtle text-xs">Telefone</span>
+                  <p className="text-app break-all">{func.telefone}</p>
                 </div>
                 <div>
-                  <span className="text-gray-500 text-xs">Horário</span>
-                  <p className="text-white">
+                  <span className="text-subtle text-xs">Horário</span>
+                  <p className="text-app">
                     {func.horarioInicio} - {func.horarioFim}
                   </p>
                 </div>
                 <div className="col-span-2 sm:col-span-1">
-                  <span className="text-gray-500 text-xs">Foto</span>
-                  <p className="text-white break-all">
+                  <span className="text-subtle text-xs">Foto</span>
+                  <p className="text-app break-all">
                     {func.foto ? "✓ carregada" : "—"}
                   </p>
                 </div>
@@ -170,32 +170,32 @@ export default function AdminRow({ func, onChange, onDelete }: Props) {
             <div className="space-y-3">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs text-gray-400">Nome</label>
+                  <label className="text-xs text-muted">Nome</label>
                   <input
                     value={draft.nome}
                     onChange={(e) => setDraft({ ...draft, nome: e.target.value })}
-                    className="w-full bg-ponsse-black border border-gray-700 rounded-lg px-3 py-2 text-white"
+                    className="w-full bg-input border border-app rounded-lg px-3 py-2 text-app"
                   />
                 </div>
                 <div>
-                  <label className="text-xs text-gray-400">Setor</label>
+                  <label className="text-xs text-muted">Setor</label>
                   <input
                     value={draft.setor}
                     onChange={(e) => setDraft({ ...draft, setor: e.target.value })}
-                    className="w-full bg-ponsse-black border border-gray-700 rounded-lg px-3 py-2 text-white"
+                    className="w-full bg-input border border-app rounded-lg px-3 py-2 text-app"
                   />
                 </div>
                 <div>
-                  <label className="text-xs text-gray-400">Telefone</label>
+                  <label className="text-xs text-muted">Telefone</label>
                   <input
                     value={draft.telefone}
                     onChange={(e) => setDraft({ ...draft, telefone: e.target.value })}
                     placeholder="+55 11 99999-9999"
-                    className="w-full bg-ponsse-black border border-gray-700 rounded-lg px-3 py-2 text-white"
+                    className="w-full bg-input border border-app rounded-lg px-3 py-2 text-app"
                   />
                 </div>
                 <div className="sm:col-span-2">
-                  <label className="text-xs text-gray-400">Atalhos de horário</label>
+                  <label className="text-xs text-muted">Atalhos de horário</label>
                   <div className="flex flex-wrap gap-1.5 mt-1">
                     {[
                       { label: "24h", ini: "00:00", fim: "23:59" },
@@ -232,25 +232,25 @@ export default function AdminRow({ func, onChange, onDelete }: Props) {
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="text-xs text-gray-400">Início</label>
+                    <label className="text-xs text-muted">Início</label>
                     <input
                       type="time"
                       value={draft.horarioInicio}
                       onChange={(e) =>
                         setDraft({ ...draft, horarioInicio: e.target.value })
                       }
-                      className="w-full bg-ponsse-black border border-gray-700 rounded-lg px-3 py-2 text-white"
+                      className="w-full bg-input border border-app rounded-lg px-3 py-2 text-app"
                     />
                   </div>
                   <div>
-                    <label className="text-xs text-gray-400">Fim</label>
+                    <label className="text-xs text-muted">Fim</label>
                     <input
                       type="time"
                       value={draft.horarioFim}
                       onChange={(e) =>
                         setDraft({ ...draft, horarioFim: e.target.value })
                       }
-                      className="w-full bg-ponsse-black border border-gray-700 rounded-lg px-3 py-2 text-white"
+                      className="w-full bg-input border border-app rounded-lg px-3 py-2 text-app"
                     />
                   </div>
                 </div>

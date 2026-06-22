@@ -61,23 +61,23 @@ export default function MensagemModal({
       onClick={onClose}
     >
       <div
-        className="bg-ponsse-dark border-t-4 sm:border-4 border-ponsse-yellow rounded-t-3xl sm:rounded-3xl w-full sm:max-w-md max-h-[90vh] overflow-y-auto"
+        className="bg-card border-t-4 sm:border-4 border-ponsse-yellow rounded-t-3xl sm:rounded-3xl w-full sm:max-w-md max-h-[90vh] overflow-y-auto shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header do modal */}
-        <div className="p-5 border-b border-gray-700 flex items-start gap-3">
+        <div className="p-5 border-b border-app flex items-start gap-3">
           <div className="flex-1 min-w-0">
             <p className="text-xs text-ponsse-yellow uppercase tracking-wider">
               Falar com
             </p>
-            <h2 className="text-xl font-bold text-white truncate">
+            <h2 className="text-xl font-bold text-app truncate">
               {func.nome}
             </h2>
-            <p className="text-sm text-gray-400">{func.setor}</p>
+            <p className="text-sm text-muted">{func.setor}</p>
           </div>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-white text-2xl leading-none w-9 h-9 flex items-center justify-center rounded-full hover:bg-gray-700"
+            className="text-muted hover:text-app text-2xl leading-none w-9 h-9 flex items-center justify-center rounded-full hover:bg-gray-700"
             aria-label="Fechar"
           >
             ×
@@ -87,13 +87,13 @@ export default function MensagemModal({
         {/* Formulário */}
         <div className="p-5 space-y-4">
           <div>
-            <label className="block text-sm font-semibold text-white mb-1.5">
+            <label className="block text-sm font-semibold text-app mb-1.5">
               Assunto / Setor
             </label>
             <select
               value={setor}
               onChange={(e) => setSetor(e.target.value)}
-              className="w-full bg-ponsse-black border border-gray-700 rounded-lg px-3 py-2.5 text-white focus:border-ponsse-yellow focus:outline-none"
+              className="w-full bg-input border border-app rounded-lg px-3 py-2.5 text-app focus:border-ponsse-yellow focus:outline-none"
             >
               {setoresDisponiveis.map((s) => (
                 <option key={s} value={s}>
@@ -104,7 +104,7 @@ export default function MensagemModal({
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-white mb-1.5">
+            <label className="block text-sm font-semibold text-app mb-1.5">
               Resumo do que você precisa
             </label>
             <textarea
@@ -113,23 +113,23 @@ export default function MensagemModal({
               maxLength={400}
               rows={4}
               placeholder="Ex: Gostaria de um orçamento de peças para o harvester..."
-              className="w-full bg-ponsse-black border border-gray-700 rounded-lg px-3 py-2.5 text-white focus:border-ponsse-yellow focus:outline-none resize-none"
+              className="w-full bg-input border border-app rounded-lg px-3 py-2.5 text-app focus:border-ponsse-yellow focus:outline-none resize-none"
             />
-            <p className="text-[10px] text-gray-500 mt-1 text-right">
+            <p className="text-[10px] text-subtle mt-1 text-right">
               {mensagem.length}/400 caracteres
             </p>
           </div>
 
           {/* Preview da mensagem */}
-          <div className="bg-ponsse-black/50 border border-gray-700 rounded-lg p-3">
-            <p className="text-[10px] text-gray-500 uppercase tracking-wider mb-1.5">
+          <div className="bg-input/50 border border-app rounded-lg p-3">
+            <p className="text-[10px] text-subtle uppercase tracking-wider mb-1.5">
               Pré-visualização do WhatsApp
             </p>
-            <p className="text-xs text-gray-300 whitespace-pre-line">
+            <p className="text-xs text-muted whitespace-pre-line">
               {`Olá ${func.nome.split(" ")[0]},\n\n`}
               {`Estou entrando em contato pelo aplicativo de atendimento Ponsse.\n`}
               {`Assunto: ${setor || "Geral"}\n\n`}
-              <span className="text-white">
+              <span className="text-app">
                 {mensagem.trim() || "(sua mensagem aparecerá aqui)"}
               </span>
             </p>

@@ -30,16 +30,16 @@ export default function FuncionarioCard({
   return (
     <>
       <div
-        className={`relative bg-ponsse-dark rounded-2xl border-2 overflow-hidden transition-all ${
+        className={`relative bg-card rounded-2xl border-2 overflow-hidden transition-all ${
           disponivel
             ? "border-green-500 shadow-lg shadow-green-500/20 hover:scale-[1.02] cursor-pointer"
-            : "border-gray-700 opacity-70"
+            : "border-strong-app opacity-70"
         }`}
         onClick={handleClick}
         role={disponivel ? "button" : undefined}
       >
         {/* Status indicator */}
-        <div className="absolute top-2 right-2 sm:top-3 sm:right-3 flex items-center gap-1 sm:gap-2 bg-ponsse-black/80 backdrop-blur-sm px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-full">
+        <div className="absolute top-2 right-2 sm:top-3 sm:right-3 flex items-center gap-1 sm:gap-2 bg-input/80 backdrop-blur-sm px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-full">
           <span
             className={`w-1.5 h-1.5 sm:w-2.5 sm:h-2.5 rounded-full ${
               disponivel ? "bg-green-500 pulse-online" : "bg-gray-500"
@@ -78,7 +78,7 @@ export default function FuncionarioCard({
           </div>
 
           {/* Nome e Setor */}
-          <h3 className="text-sm sm:text-lg font-bold text-white mb-0.5 sm:mb-1 leading-tight px-1">
+          <h3 className="text-sm sm:text-lg font-bold text-app mb-0.5 sm:mb-1 leading-tight px-1">
             {func.nome}
           </h3>
           <p className="text-xs sm:text-sm text-ponsse-yellow font-medium mb-2 sm:mb-3">
@@ -86,7 +86,7 @@ export default function FuncionarioCard({
           </p>
 
           {/* Horário - só mostra no tablet+ */}
-          <p className="hidden sm:block text-xs text-gray-400 mb-4">
+          <p className="hidden sm:block text-xs text-muted mb-4">
             Horário: {func.horarioInicio} - {func.horarioFim}
           </p>
 
@@ -102,7 +102,7 @@ export default function FuncionarioCard({
           </div>
 
           {/* Telefone - só no tablet+ */}
-          <p className="hidden sm:block text-[10px] text-gray-500 mt-2 break-all">
+          <p className="hidden sm:block text-[10px] text-subtle mt-2 break-all">
             {func.telefone}
           </p>
         </div>

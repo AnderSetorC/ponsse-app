@@ -97,11 +97,11 @@ export default function Home() {
       <main className="flex-1 max-w-6xl w-full mx-auto px-3 sm:px-4 py-6 sm:py-8">
         {/* Hero / Status */}
         <div className="mb-6 sm:mb-8 text-center">
-          <h1 className="text-2xl sm:text-4xl font-bold text-white mb-2 px-2">
+          <h1 className="text-2xl sm:text-4xl font-bold text-app mb-2 px-2">
             Quem está disponível agora
           </h1>
           {agora && (
-            <p className="text-xs sm:text-sm text-gray-400 px-2">
+            <p className="text-xs sm:text-sm text-muted px-2">
               <span className="hidden sm:inline">
                 {agora.toLocaleDateString("pt-BR", {
                   weekday: "long",
@@ -121,16 +121,16 @@ export default function Home() {
             </p>
           )}
           <div className="mt-4 flex items-center justify-center gap-2 flex-wrap">
-            <div className="inline-flex items-center gap-2 bg-ponsse-dark border border-ponsse-yellow/30 px-4 py-2 rounded-full">
+            <div className="inline-flex items-center gap-2 bg-card border border-ponsse-yellow/30 px-4 py-2 rounded-full">
               <span className="w-2.5 h-2.5 rounded-full bg-green-500 pulse-online" />
-              <span className="text-sm font-semibold text-white">
+              <span className="text-sm font-semibold text-app">
                 {disponiveis} {disponiveis === 1 ? "pessoa disponível" : "pessoas disponíveis"}
               </span>
             </div>
             <button
               onClick={() => recarregar(false)}
               disabled={atualizando}
-              className="inline-flex items-center gap-1.5 text-xs text-gray-400 hover:text-ponsse-yellow px-3 py-2 rounded-full border border-gray-700 hover:border-ponsse-yellow transition-colors disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 text-xs text-muted hover:text-ponsse-yellow px-3 py-2 rounded-full border border-app hover:border-ponsse-yellow transition-colors disabled:opacity-50"
               title={
                 ultimaAtualizacao
                   ? `Última atualização: ${ultimaAtualizacao.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}`
@@ -154,7 +154,7 @@ export default function Home() {
             </button>
           </div>
           {ultimaAtualizacao && (
-            <p className="text-[10px] text-gray-600 mt-2">
+            <p className="text-[10px] text-subtle mt-2">
               Atualizado às {ultimaAtualizacao.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}
             </p>
           )}
@@ -162,9 +162,9 @@ export default function Home() {
 
         {/* Cards */}
         {!carregado ? (
-          <div className="text-center text-gray-400 py-12">Carregando...</div>
+          <div className="text-center text-muted py-12">Carregando...</div>
         ) : visiveis.length === 0 ? (
-          <div className="text-center text-gray-400 py-12">
+          <div className="text-center text-muted py-12">
             Ninguém disponível no momento. Tente novamente mais tarde.
           </div>
         ) : (
@@ -180,13 +180,13 @@ export default function Home() {
           </div>
         )}
 
-        <p className="text-center text-xs text-gray-500 mt-10">
+        <p className="text-center text-xs text-subtle mt-10">
           Atualiza automaticamente • Toque em quem está online para falar
         </p>
       </main>
 
-      <footer className="border-t border-gray-800 py-4 text-center">
-        <p className="text-xs text-gray-500">
+      <footer className="border-t border-app py-4 text-center">
+        <p className="text-xs text-subtle">
           Ponsse • A logger&apos;s best friend
         </p>
       </footer>

@@ -23,8 +23,8 @@ export default function AdminPage() {
 
   if (verificandoAuth) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-ponsse-black">
-        <p className="text-gray-400">Carregando...</p>
+      <div className="min-h-screen flex items-center justify-center bg-app">
+        <p className="text-muted">Carregando...</p>
       </div>
     );
   }
@@ -192,8 +192,8 @@ function AdminConteudo() {
       <main className="flex-1 max-w-4xl w-full mx-auto px-3 sm:px-4 py-4 sm:py-6">
         <div className="mb-6 flex items-start justify-between flex-wrap gap-3">
           <div className="min-w-0 flex-1">
-            <h1 className="text-xl sm:text-2xl font-bold text-white">Painel Administrativo</h1>
-            <p className="text-xs sm:text-sm text-gray-400">
+            <h1 className="text-xl sm:text-2xl font-bold text-app">Painel Administrativo</h1>
+            <p className="text-xs sm:text-sm text-muted">
               Configure quem está disponível para atendimento
             </p>
           </div>
@@ -221,7 +221,7 @@ function AdminConteudo() {
                 logout();
                 location.reload();
               }}
-              className="text-xs text-gray-400 hover:text-red-400 transition-colors px-3 py-1.5 rounded border border-gray-700 hover:border-red-500/50"
+              className="text-xs text-muted hover:text-red-400 transition-colors px-3 py-1.5 rounded border border-app hover:border-red-500/50"
               title="Sair do painel"
             >
               ↪ Sair
@@ -232,27 +232,27 @@ function AdminConteudo() {
         {/* Painel de estatísticas */}
         {carregado && lista.length > 0 && (
           <div className="mb-6 grid grid-cols-2 sm:grid-cols-4 gap-2">
-            <div className="bg-ponsse-dark border border-gray-700 rounded-xl p-3 text-center">
-              <p className="text-2xl font-bold text-white">{stats.total}</p>
-              <p className="text-[10px] text-gray-400 uppercase tracking-wider">
+            <div className="bg-card border border-app rounded-xl p-3 text-center">
+              <p className="text-2xl font-bold text-app">{stats.total}</p>
+              <p className="text-[10px] text-muted uppercase tracking-wider">
                 Cadastrados
               </p>
             </div>
-            <div className="bg-ponsse-dark border border-green-500/30 rounded-xl p-3 text-center">
+            <div className="bg-card border border-green-500/30 rounded-xl p-3 text-center">
               <p className="text-2xl font-bold text-green-400">{stats.ativos}</p>
-              <p className="text-[10px] text-gray-400 uppercase tracking-wider">
+              <p className="text-[10px] text-muted uppercase tracking-wider">
                 Ativos hoje
               </p>
             </div>
-            <div className="bg-ponsse-dark border border-blue-500/30 rounded-xl p-3 text-center">
+            <div className="bg-card border border-blue-500/30 rounded-xl p-3 text-center">
               <p className="text-2xl font-bold text-blue-400">{stats.visiveis}</p>
-              <p className="text-[10px] text-gray-400 uppercase tracking-wider">
+              <p className="text-[10px] text-muted uppercase tracking-wider">
                 Visíveis
               </p>
             </div>
-            <div className="bg-ponsse-dark border border-gray-700 rounded-xl p-3 text-center">
-              <p className="text-2xl font-bold text-gray-400">{stats.ocultos}</p>
-              <p className="text-[10px] text-gray-400 uppercase tracking-wider">
+            <div className="bg-card border border-app rounded-xl p-3 text-center">
+              <p className="text-2xl font-bold text-muted">{stats.ocultos}</p>
+              <p className="text-[10px] text-muted uppercase tracking-wider">
                 Ocultos
               </p>
             </div>
@@ -260,8 +260,8 @@ function AdminConteudo() {
         )}
 
         {/* Ações rápidas */}
-        <div className="mb-6 p-3 sm:p-4 bg-ponsse-dark border border-gray-700 rounded-xl">
-          <p className="text-xs text-gray-400 uppercase tracking-wider mb-2 font-bold">
+        <div className="mb-6 p-3 sm:p-4 bg-card border border-app rounded-xl">
+          <p className="text-xs text-muted uppercase tracking-wider mb-2 font-bold">
             ⚡ Ações rápidas
           </p>
           <div className="flex flex-wrap gap-2">
@@ -274,7 +274,7 @@ function AdminConteudo() {
             </button>
             <button
               onClick={desativarTodos}
-              className="text-xs sm:text-sm bg-gray-700 text-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-600 flex-1 sm:flex-none"
+              className="text-xs sm:text-sm bg-gray-700 text-app px-3 py-1.5 rounded-lg hover:bg-gray-600 flex-1 sm:flex-none"
             >
               <span className="hidden sm:inline">○ Encerrar dia (desativar todos)</span>
               <span className="sm:hidden">○ Encerrar dia</span>
@@ -297,12 +297,12 @@ function AdminConteudo() {
 
         {/* Painel de ajuda */}
         {showHelp && (
-          <div className="mb-6 p-4 bg-yellow-500/5 border-2 border-yellow-500/30 rounded-xl text-sm text-gray-200 space-y-3">
+          <div className="mb-6 p-4 bg-yellow-500/5 border-2 border-yellow-500/30 rounded-xl text-sm text-app space-y-3">
             <div>
               <p className="font-bold text-ponsse-yellow mb-1">
                 👁 VISÍVEL / 🚫 OCULTO
               </p>
-              <p className="text-gray-300">
+              <p className="text-muted">
                 Controla se a pessoa <strong>aparece</strong> na página
                 principal. Use &quot;Oculto&quot; para quem está de férias, saiu
                 da empresa, ou simplesmente não deve receber ligação no momento.
@@ -312,7 +312,7 @@ function AdminConteudo() {
               <p className="font-bold text-ponsse-yellow mb-1">
                 ● ATIVO / ○ INATIVO
               </p>
-              <p className="text-gray-300">
+              <p className="text-muted">
                 Funciona em conjunto com o horário. Pessoa <strong>Ativa</strong>{" "}
                 + dentro do horário = aparece como Online (botão amarelo
                 WhatsApp). Se o horário acabou, vira Offline (botão cinza).
@@ -322,7 +322,7 @@ function AdminConteudo() {
               <p className="font-bold text-ponsse-yellow mb-1">
                 ⏰ Horário de atendimento
               </p>
-              <p className="text-gray-300">
+              <p className="text-muted">
                 Defina o intervalo em que a pessoa pode ser contactada. Fora
                 desse intervalo, ela continua visível mas o cliente não consegue
                 clicar para falar.
@@ -330,7 +330,7 @@ function AdminConteudo() {
             </div>
             <div>
               <p className="font-bold text-ponsse-yellow mb-1">📷 Foto</p>
-              <p className="text-gray-300">
+              <p className="text-muted">
                 Envie uma foto pelo &quot;📷 Trocar foto&quot;. Ela é
                 automaticamente compactada e salva no banco (Upstash) junto com
                 os outros dados. Aparece para todos os clientes em todos os
@@ -341,7 +341,7 @@ function AdminConteudo() {
               <p className="font-bold text-ponsse-yellow mb-1">
                 💾 Como funciona o salvamento
               </p>
-              <p className="text-gray-300">
+              <p className="text-muted">
                 As alterações ficam salvas no navegador que você está usando.
                 Para ter os dados em outro computador, use o Chrome no mesmo
                 perfil. Para salvar fotos de forma definitiva (servir para
@@ -352,7 +352,7 @@ function AdminConteudo() {
               <p className="font-bold text-ponsse-yellow mb-1">
                 🔗 O que o cliente vê
               </p>
-              <p className="text-gray-300">
+              <p className="text-muted">
                 O cliente acessa apenas a página principal (
                 <code className="bg-black/40 px-1.5 py-0.5 rounded text-xs">
                   /
@@ -366,7 +366,7 @@ function AdminConteudo() {
               <p className="font-bold text-ponsse-yellow mb-1">
                 🏷 Setores (categorias da mensagem)
               </p>
-              <p className="text-gray-300">
+              <p className="text-muted">
                 Cadastre os <strong>assuntos</strong> que o cliente pode
                 escolher ao abrir um contato (ex: &quot;Orçamento de peças&quot;,
                 &quot;Assistência técnica&quot;, &quot;Outros&quot;). Esses
@@ -381,7 +381,7 @@ function AdminConteudo() {
         <SetoresManager setores={setores} onChange={atualizarSetores} />
 
         {/* Adicionar novo */}
-        <div className="bg-ponsse-dark border-2 border-ponsse-yellow/30 rounded-2xl p-4 mb-6">
+        <div className="bg-card border-2 border-ponsse-yellow/30 rounded-2xl p-4 mb-6">
           <h2 className="text-lg font-bold text-ponsse-yellow mb-3">
             + Adicionar novo funcionário
           </h2>
@@ -390,13 +390,13 @@ function AdminConteudo() {
               placeholder="Nome completo"
               value={novo.nome}
               onChange={(e) => setNovo({ ...novo, nome: e.target.value })}
-              className="bg-ponsse-black border border-gray-700 rounded-lg px-3 py-2 text-white"
+              className="bg-app border border-app rounded-lg px-3 py-2 text-white"
             />
             {setores.length > 0 ? (
               <select
                 value={novo.setor}
                 onChange={(e) => setNovo({ ...novo, setor: e.target.value })}
-                className="bg-ponsse-black border border-gray-700 rounded-lg px-3 py-2 text-white"
+                className="bg-app border border-app rounded-lg px-3 py-2 text-white"
               >
                 <option value="">Selecione o setor</option>
                 {setores.map((s) => (
@@ -410,27 +410,27 @@ function AdminConteudo() {
                 placeholder="Setor (ex: Logística)"
                 value={novo.setor}
                 onChange={(e) => setNovo({ ...novo, setor: e.target.value })}
-                className="bg-ponsse-black border border-gray-700 rounded-lg px-3 py-2 text-white"
+                className="bg-app border border-app rounded-lg px-3 py-2 text-white"
               />
             )}
             <input
               placeholder="Telefone (ex: +55 11 99999-9999)"
               value={novo.telefone}
               onChange={(e) => setNovo({ ...novo, telefone: e.target.value })}
-              className="bg-ponsse-black border border-gray-700 rounded-lg px-3 py-2 text-white"
+              className="bg-app border border-app rounded-lg px-3 py-2 text-white"
             />
             <div className="grid grid-cols-2 gap-2">
               <input
                 type="time"
                 value={novo.horarioInicio}
                 onChange={(e) => setNovo({ ...novo, horarioInicio: e.target.value })}
-                className="bg-ponsse-black border border-gray-700 rounded-lg px-3 py-2 text-white"
+                className="bg-app border border-app rounded-lg px-3 py-2 text-white"
               />
               <input
                 type="time"
                 value={novo.horarioFim}
                 onChange={(e) => setNovo({ ...novo, horarioFim: e.target.value })}
-                className="bg-ponsse-black border border-gray-700 rounded-lg px-3 py-2 text-white"
+                className="bg-app border border-app rounded-lg px-3 py-2 text-white"
               />
             </div>
           </div>
@@ -444,17 +444,17 @@ function AdminConteudo() {
 
         {/* Lista de funcionários */}
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-lg font-bold text-white">
+          <h2 className="text-lg font-bold text-app">
             Funcionários ({lista.length})
           </h2>
-          <p className="text-xs text-gray-500 hidden sm:block">
+          <p className="text-xs text-subtle hidden sm:block">
             💡 Dica: &quot;Iniciar dia&quot; ativa todos de uma vez
           </p>
         </div>
 
         <div className="space-y-3">
           {carregado && lista.length === 0 && (
-            <p className="text-center text-gray-400 py-8">
+            <p className="text-center text-muted py-8">
               Nenhum funcionário cadastrado ainda. Use o formulário acima para
               adicionar o primeiro.
             </p>
