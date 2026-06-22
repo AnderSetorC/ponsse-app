@@ -49,6 +49,16 @@
       "visivel": false,
       "horarioInicio": "08:00",
       "horarioFim": "18:00"
+    },
+    {
+      "id": "mqoj8gd2ozrru",
+      "nome": "ANDERSON",
+      "setor": "Logística",
+      "telefone": "5514991291256",
+      "ativo": true,
+      "visivel": true,
+      "horarioInicio": "08:00",
+      "horarioFim": "23:59"
     }
   ],
   "setores": [
