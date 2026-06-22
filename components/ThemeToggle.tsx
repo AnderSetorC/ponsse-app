@@ -7,7 +7,7 @@ export type Theme = "dark" | "light";
 const KEY = "ponsse-tema-v1";
 
 export function useTheme(): [Theme, () => void] {
-  const [tema, setTema] = useState<Theme>("dark");
+  const [tema, setTema] = useState<Theme>("light");
 
   useEffect(() => {
     // Carrega tema salvo
@@ -15,11 +15,14 @@ export function useTheme(): [Theme, () => void] {
     if (salvo === "dark" || salvo === "light") {
       setTema(salvo);
       aplicarTema(salvo);
+    } else {
+      // Padrão: claro
+      aplicarTema("light");
     }
   }, []);
 
   function toggle() {
-    const novo: Theme = tema === "dark" ? "light" : "dark";
+    const novo: Theme = tema === "light" ? "dark" : "light";
     setTema(novo);
     localStorage.setItem(KEY, novo);
     aplicarTema(novo);
@@ -44,10 +47,10 @@ export function ThemeToggle() {
     <button
       onClick={toggle}
       className="text-gray-400 hover:text-ponsse-yellow transition-colors p-2 rounded border border-gray-700 hover:border-ponsse-yellow"
-      title={tema === "dark" ? "Mudar para modo claro" : "Mudar para modo escuro"}
+      title={tema === "light" ? "Mudar para modo escuro" : "Mudar para modo claro"}
       aria-label="Alternar tema"
     >
-      {tema === "dark" ? (
+      {tema === "light" ? (
         // Ícone de sol (modo escuro ativo → vai pra claro)
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path

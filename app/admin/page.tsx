@@ -238,14 +238,14 @@ function AdminConteudo() {
                 Cadastrados
               </p>
             </div>
-            <div className="bg-card border border-green-500/30 rounded-xl p-3 text-center">
-              <p className="text-2xl font-bold text-green-400">{stats.ativos}</p>
+            <div className="bg-card border border-green-600/40 rounded-xl p-3 text-center">
+              <p className="text-2xl font-bold text-green-700 dark:text-green-400">{stats.ativos}</p>
               <p className="text-[10px] text-muted uppercase tracking-wider">
                 Ativos hoje
               </p>
             </div>
-            <div className="bg-card border border-blue-500/30 rounded-xl p-3 text-center">
-              <p className="text-2xl font-bold text-blue-400">{stats.visiveis}</p>
+            <div className="bg-card border border-blue-600/40 rounded-xl p-3 text-center">
+              <p className="text-2xl font-bold text-blue-700 dark:text-blue-400">{stats.visiveis}</p>
               <p className="text-[10px] text-muted uppercase tracking-wider">
                 Visíveis
               </p>
@@ -267,28 +267,28 @@ function AdminConteudo() {
           <div className="flex flex-wrap gap-2">
             <button
               onClick={ativarTodos}
-              className="text-xs sm:text-sm bg-green-500/20 text-green-400 border border-green-500/30 px-3 py-1.5 rounded-lg hover:bg-green-500/30 flex-1 sm:flex-none"
+              className="text-xs sm:text-sm bg-green-600 text-white border border-green-700 px-3 py-1.5 rounded-lg hover:bg-green-700 flex-1 sm:flex-none font-semibold"
             >
               <span className="hidden sm:inline">✓ Iniciar dia (ativar todos)</span>
               <span className="sm:hidden">✓ Iniciar dia</span>
             </button>
             <button
               onClick={desativarTodos}
-              className="text-xs sm:text-sm bg-gray-700 text-app px-3 py-1.5 rounded-lg hover:bg-gray-600 flex-1 sm:flex-none"
+              className="text-xs sm:text-sm bg-strong-app text-app border border-strong-app px-3 py-1.5 rounded-lg hover:bg-gray-300 flex-1 sm:flex-none font-semibold"
             >
               <span className="hidden sm:inline">○ Encerrar dia (desativar todos)</span>
               <span className="sm:hidden">○ Encerrar dia</span>
             </button>
             <button
               onClick={visiveisTodos}
-              className="text-xs sm:text-sm bg-blue-500/20 text-blue-300 border border-blue-500/30 px-3 py-1.5 rounded-lg hover:bg-blue-500/30 flex-1 sm:flex-none"
+              className="text-xs sm:text-sm bg-blue-600 text-white border border-blue-700 px-3 py-1.5 rounded-lg hover:bg-blue-700 flex-1 sm:flex-none font-semibold"
             >
               <span className="hidden sm:inline">👁 Mostrar todos</span>
               <span className="sm:hidden">👁 Mostrar</span>
             </button>
             <button
               onClick={() => setShowHelp((s) => !s)}
-              className="text-xs sm:text-sm bg-yellow-500/20 text-yellow-300 border border-yellow-500/30 px-3 py-1.5 rounded-lg hover:bg-yellow-500/30 sm:ml-auto"
+              className="text-xs sm:text-sm bg-ponsse-yellow text-ponsse-black border border-yellow-500 px-3 py-1.5 rounded-lg hover:bg-yellow-400 sm:ml-auto font-semibold"
             >
               {showHelp ? "✕ Fechar" : "💡 Ajuda"}
             </button>
