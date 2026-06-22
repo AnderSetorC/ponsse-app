@@ -54,7 +54,17 @@ export default function Home() {
     };
   }, []);
 
-  const visiveis = funcionarios.filter((f) => f.visivel);
+  const visiveis = funcionarios
+    .filter((f) => f.visivel)
+    .slice() // copia pra não mutar o state
+    .sort((a, b) => {
+      // Ativos primeiro (considerando também horário)
+      const aAtivo = agora ? estaNoHorario(a, agora) && a.ativo : a.ativo;
+      const bAtivo = agora ? estaNoHorario(b, agora) && b.ativo : b.ativo;
+      if (aAtivo !== bAtivo) return aAtivo ? -1 : 1;
+      // Depois por nome
+      return a.nome.localeCompare(b.nome, "pt-BR");
+    });
 
   // Setores: usa os do admin (que ele cadastrou) e garante "Geral" no topo
   const setoresDisponiveis =
@@ -158,7 +168,7 @@ export default function Home() {
             Ninguém disponível no momento. Tente novamente mais tarde.
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
             {visiveis.map((func) => (
               <FuncionarioCard
                 key={func.id}
