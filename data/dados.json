@@ -6,7 +6,7 @@
       "setor": "Ponsse",
       "telefone": "+55 73 9831-6864",
       "ativo": true,
-      "visivel": true,
+      "visivel": false,
       "horarioInicio": "08:00",
       "horarioFim": "23:48"
     },
@@ -36,7 +36,7 @@
       "setor": "Comercial",
       "telefone": "+55 11 92058-8178",
       "ativo": true,
-      "visivel": false,
+      "visivel": true,
       "horarioInicio": "08:00",
       "horarioFim": "18:00"
     },
