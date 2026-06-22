@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Header from "@/components/Header";
 import AdminRow from "@/components/AdminRow";
 import SetoresManager from "@/components/SetoresManager";
@@ -47,40 +47,67 @@ function AdminConteudo() {
     horarioInicio: "08:00",
     horarioFim: "18:00",
   });
-  const [salvoEm, setSalvoEm] = useState<string | null>(null);
+  const [estado, setEstado] = useState<"salvo" | "salvando" | "erro" | "ocioso">(
+    "ocioso"
+  );
+  const [ultimaSalv, setUltimaSalv] = useState<string | null>(null);
   const [erroSalv, setErroSalv] = useState<string | null>(null);
   const [showHelp, setShowHelp] = useState(false);
+
+  // Referências pros timers de debounce
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const dadosRef = useRef<{ funcionarios: Funcionario[]; setores: string[] }>({
+    funcionarios: [],
+    setores: [],
+  });
 
   useEffect(() => {
     async function carregar() {
       const dados = await carregarDados();
       setLista(dados.funcionarios);
       setSetores(dados.setores);
+      dadosRef.current = { funcionarios: dados.funcionarios, setores: dados.setores };
       setCarregado(true);
     }
     carregar();
   }, []);
 
-  async function persistirFuncionarios(nova: Funcionario[]) {
+  // Autosave com debounce — salva 1s após a última mudança
+  function agendarSalvamento() {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    setEstado("salvando");
+    timerRef.current = setTimeout(async () => {
+      const r = await salvarDados(dadosRef.current);
+      if (r.ok) {
+        setEstado("salvo");
+        setUltimaSalv(new Date().toLocaleTimeString("pt-BR"));
+        setErroSalv(null);
+      } else {
+        setEstado("erro");
+        setErroSalv(r.error || "Erro ao salvar");
+      }
+    }, 1000);
+  }
+
+  function atualizarLista(nova: Funcionario[]) {
     setLista(nova);
-    const r = await salvarDados({ funcionarios: nova, setores });
-    if (r.ok) {
-      setSalvoEm(new Date().toLocaleTimeString("pt-BR"));
-      setErroSalv(null);
-      setTimeout(() => setSalvoEm(null), 2000);
-    } else {
-      setErroSalv(r.error || "Erro ao salvar");
-      setTimeout(() => setErroSalv(null), 5000);
-    }
+    dadosRef.current = { ...dadosRef.current, funcionarios: nova };
+    agendarSalvamento();
+  }
+
+  function atualizarSetoresLocal(novos: string[]) {
+    setSetores(novos);
+    dadosRef.current = { ...dadosRef.current, setores: novos };
+    agendarSalvamento();
   }
 
   function atualizar(func: Funcionario) {
-    persistirFuncionarios(lista.map((f) => (f.id === func.id ? func : f)));
+    atualizarLista(lista.map((f) => (f.id === func.id ? func : f)));
   }
 
   function remover(id: string) {
     if (!confirm("Remover este funcionário?")) return;
-    persistirFuncionarios(lista.filter((f) => f.id !== id));
+    atualizarLista(lista.filter((f) => f.id !== id));
   }
 
   function adicionar() {
@@ -98,7 +125,7 @@ function AdminConteudo() {
       horarioInicio: novo.horarioInicio,
       horarioFim: novo.horarioFim,
     };
-    persistirFuncionarios([...lista, f]);
+    atualizarLista([...lista, f]);
     setNovo({
       nome: "",
       setor: "",
@@ -109,29 +136,46 @@ function AdminConteudo() {
   }
 
   function ativarTodos() {
-    persistirFuncionarios(lista.map((f) => ({ ...f, ativo: true })));
+    atualizarLista(lista.map((f) => ({ ...f, ativo: true })));
   }
 
   function desativarTodos() {
-    persistirFuncionarios(lista.map((f) => ({ ...f, ativo: false })));
+    atualizarLista(lista.map((f) => ({ ...f, ativo: false })));
   }
 
   function visiveisTodos() {
-    persistirFuncionarios(lista.map((f) => ({ ...f, visivel: true })));
+    atualizarLista(lista.map((f) => ({ ...f, visivel: true })));
   }
 
-  async function atualizarSetores(novos: string[]) {
-    setSetores(novos);
-    const r = await salvarDados({ funcionarios: lista, setores: novos });
-    if (r.ok) {
-      setSalvoEm(new Date().toLocaleTimeString("pt-BR"));
-      setErroSalv(null);
-      setTimeout(() => setSalvoEm(null), 2000);
-    } else {
-      setErroSalv(r.error || "Erro ao salvar");
-      setTimeout(() => setErroSalv(null), 5000);
-    }
+  function atualizarSetores(novos: string[]) {
+    atualizarSetoresLocal(novos);
   }
+
+  // Verifica se o token do GitHub está configurado
+  useEffect(() => {
+    async function verificarToken() {
+      try {
+        const res = await fetch("/api/dados", { method: "POST", body: "{}" });
+        if (res.status === 500) {
+          const data = await res.json();
+          if (data.error && data.error.includes("Token")) {
+            setErroSalv("Token do GitHub não configurado no Vercel");
+            setEstado("erro");
+          }
+        }
+      } catch {
+        // ignora
+      }
+    }
+    if (carregado) verificarToken();
+  }, [carregado]);
+
+  // Cleanup do timer ao desmontar
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
 
   const stats = useMemo(() => {
     const total = lista.length;
@@ -154,13 +198,21 @@ function AdminConteudo() {
             </p>
           </div>
           <div className="flex items-center gap-2">
-            {salvoEm && (
-              <span className="text-xs text-green-400 animate-pulse">
-                ✓ Salvo às {salvoEm}
+            {estado === "salvando" && (
+              <span className="text-xs text-yellow-400 animate-pulse">
+                ⏳ Salvando...
               </span>
             )}
-            {erroSalv && (
-              <span className="text-xs text-red-400" title={erroSalv}>
+            {estado === "salvo" && ultimaSalv && (
+              <span className="text-xs text-green-400">
+                ✓ Salvo às {ultimaSalv}
+              </span>
+            )}
+            {estado === "erro" && erroSalv && (
+              <span
+                className="text-xs text-red-400"
+                title={erroSalv}
+              >
                 ✕ {erroSalv.length > 40 ? erroSalv.slice(0, 40) + "..." : erroSalv}
               </span>
             )}
