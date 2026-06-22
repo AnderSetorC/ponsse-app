@@ -208,6 +208,42 @@ export default function AdminRow({ func, onChange, onDelete }: Props) {
                     className="w-full bg-ponsse-black border border-gray-700 rounded-lg px-3 py-2 text-white"
                   />
                 </div>
+                <div className="sm:col-span-2">
+                  <label className="text-xs text-gray-400">Atalhos de horário</label>
+                  <div className="flex flex-wrap gap-1.5 mt-1">
+                    {[
+                      { label: "24h", ini: "00:00", fim: "23:59" },
+                      { label: "Comercial 08-18", ini: "08:00", fim: "18:00" },
+                      { label: "Manhã 06-14", ini: "06:00", fim: "14:00" },
+                      { label: "Tarde 14-22", ini: "14:00", fim: "22:00" },
+                      { label: "Noite 22-06", ini: "22:00", fim: "06:00" },
+                    ].map((preset) => {
+                      const ativo =
+                        draft.horarioInicio === preset.ini &&
+                        draft.horarioFim === preset.fim;
+                      return (
+                        <button
+                          key={preset.label}
+                          type="button"
+                          onClick={() =>
+                            setDraft({
+                              ...draft,
+                              horarioInicio: preset.ini,
+                              horarioFim: preset.fim,
+                            })
+                          }
+                          className={`text-[11px] px-2.5 py-1 rounded-full transition-all ${
+                            ativo
+                              ? "bg-ponsse-yellow text-ponsse-black font-bold"
+                              : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                          }`}
+                        >
+                          {preset.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
                     <label className="text-xs text-gray-400">Início</label>

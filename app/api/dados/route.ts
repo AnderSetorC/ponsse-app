@@ -137,12 +137,28 @@ export async function POST(req: Request) {
     setores: body.setores || setoresDefault,
   };
 
-  // Lê o SHA atual
+  // Lê o SHA atual + dados existentes
   const atual = await lerComToken(token);
   if (!atual) {
     return NextResponse.json(
       { error: "Não foi possível ler o arquivo no GitHub" },
       { status: 500 }
+    );
+  }
+
+  // PROTEÇÃO: se a nova lista vier vazia mas a anterior tem dados, recusa
+  if (
+    novosDados.funcionarios.length === 0 &&
+    atual.dados.funcionarios.length > 0
+  ) {
+    return NextResponse.json(
+      {
+        error:
+          "Bloqueado: novo payload tem 0 funcionários, mas existem " +
+          atual.dados.funcionarios.length +
+          " no servidor. Atualize a página antes de salvar.",
+      },
+      { status: 400 }
     );
   }
 
