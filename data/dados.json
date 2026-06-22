@@ -56,7 +56,7 @@
       "setor": "Logística",
       "telefone": "5514991291256",
       "ativo": true,
-      "visivel": true,
+      "visivel": false,
       "horarioInicio": "08:00",
       "horarioFim": "23:00"
     }
