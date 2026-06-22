@@ -16,8 +16,13 @@ type Dados = {
 };
 
 function getRedis() {
-  // Lê das variáveis de ambiente automaticamente
-  return Redis.fromEnv();
+  // Usa REST API explicitamente (não TCP, que não funciona no Vercel)
+  const url = process.env.UPSTASH_REDIS_REST_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+  if (!url || !token) {
+    throw new Error("UPSTASH_REDIS_REST_URL e UPSTASH_REDIS_REST_TOKEN são obrigatórios");
+  }
+  return new Redis({ url, token });
 }
 
 export async function GET() {
