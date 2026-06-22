@@ -8,7 +8,7 @@
       "ativo": true,
       "visivel": true,
       "horarioInicio": "08:00",
-      "horarioFim": "23:00"
+      "horarioFim": "18:00"
     },
     {
       "id": "2",
@@ -18,7 +18,7 @@
       "ativo": true,
       "visivel": true,
       "horarioInicio": "08:00",
-      "horarioFim": "23:45"
+      "horarioFim": "18:00"
     },
     {
       "id": "3",
@@ -36,7 +36,7 @@
       "setor": "Comercial",
       "telefone": "+55 11 92058-8178",
       "ativo": true,
-      "visivel": true,
+      "visivel": false,
       "horarioInicio": "08:00",
       "horarioFim": "18:00"
     },
@@ -46,9 +46,9 @@
       "setor": "Almoxarifado",
       "telefone": "+55 11 91027-7752",
       "ativo": true,
-      "visivel": true,
+      "visivel": false,
       "horarioInicio": "08:00",
-      "horarioFim": "23:00"
+      "horarioFim": "18:00"
     }
   ],
   "setores": [
