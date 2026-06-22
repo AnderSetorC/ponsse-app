@@ -10,14 +10,34 @@ export const dynamic = "force-dynamic";
 const REPO = "AnderSetorC/ponsse-app";
 const PATH = "data/dados.json";
 const RAW_URL = `https://raw.githubusercontent.com/${REPO}/main/${PATH}`;
+const API_URL = `https://api.github.com/repos/${REPO}/contents/${PATH}`;
 
 type Dados = {
   funcionarios: Funcionario[];
   setores: string[];
 };
 
-// Lê o arquivo data/dados.json do GitHub (raw)
-async function lerDoGitHub(): Promise<Dados | null> {
+// Lê via API do GitHub (não tem cache, dados sempre frescos)
+async function lerDaAPIGitHub(): Promise<Dados | null> {
+  const token = process.env.GITHUB_TOKEN;
+  if (!token) return null;
+  try {
+    const res = await fetch(API_URL, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/vnd.github.v3.raw",
+      },
+      cache: "no-store",
+    });
+    if (!res.ok) return null;
+    return (await res.json()) as Dados;
+  } catch {
+    return null;
+  }
+}
+
+// Lê o arquivo data/dados.json do GitHub (raw - fallback)
+async function lerDoRaw(): Promise<Dados | null> {
   try {
     const res = await fetch(RAW_URL, { cache: "no-store" });
     if (!res.ok) return null;
@@ -77,13 +97,21 @@ async function escreverNoGitHub(
 }
 
 export async function GET() {
-  // Tenta ler do GitHub primeiro
-  const dados = await lerDoGitHub();
+  // Tenta API do GitHub primeiro (não tem cache, dados sempre frescos)
+  let dados = await lerDaAPIGitHub();
+  let origem: "api" | "raw" | "iniciais" = "api";
+
+  // Fallback para raw (caso token não configurado)
+  if (!dados) {
+    dados = await lerDoRaw();
+    origem = "raw";
+  }
+
   if (dados && Array.isArray(dados.funcionarios) && dados.funcionarios.length > 0) {
     return NextResponse.json({
       funcionarios: dados.funcionarios,
       setores: dados.setores || setoresDefault,
-      origem: "github",
+      origem,
     });
   }
   // Fallback: retorna os iniciais
