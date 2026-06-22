@@ -14,6 +14,7 @@ type Props = {
 export default function AdminRow({ func, onChange, onDelete }: Props) {
   const [edit, setEdit] = useState(false);
   const [draft, setDraft] = useState<Funcionario>(func);
+  const [uploading, setUploading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   function salvar() {
@@ -26,24 +27,17 @@ export default function AdminRow({ func, onChange, onDelete }: Props) {
     setEdit(false);
   }
 
-  function onUploadFoto(file: File) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const dataUrl = e.target?.result as string;
+  // Redimensiona e comprime a foto para não pesar no Upstash
+  async function onUploadFoto(file: File) {
+    setUploading(true);
+    try {
+      const dataUrl = await comprimirImagem(file, 400, 0.85);
       onChange({ ...func, foto: dataUrl });
-    };
-    reader.readAsDataURL(file);
-  }
-
-  function baixarFoto() {
-    if (!func.foto) return;
-    const nomeArquivo = `${func.id}.jpg`;
-    const a = document.createElement("a");
-    a.href = func.foto;
-    a.download = nomeArquivo;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    } catch (err) {
+      alert("Erro ao processar foto: " + String(err));
+    } finally {
+      setUploading(false);
+    }
   }
 
   return (
@@ -146,9 +140,10 @@ export default function AdminRow({ func, onChange, onDelete }: Props) {
               <div className="mt-3 flex gap-2 flex-wrap">
                 <button
                   onClick={() => fileRef.current?.click()}
-                  className="text-xs px-3 py-1.5 rounded-lg bg-gray-700 text-gray-200 hover:bg-gray-600"
+                  disabled={uploading}
+                  className="text-xs px-3 py-1.5 rounded-lg bg-gray-700 text-gray-200 hover:bg-gray-600 disabled:opacity-50"
                 >
-                  📷 Trocar foto
+                  {uploading ? "⏳ Processando..." : "📷 Trocar foto"}
                 </button>
                 <input
                   ref={fileRef}
@@ -162,21 +157,12 @@ export default function AdminRow({ func, onChange, onDelete }: Props) {
                   }}
                 />
                 {func.foto && (
-                  <>
-                    <button
-                      onClick={baixarFoto}
-                      className="text-xs px-3 py-1.5 rounded-lg bg-blue-500/20 text-blue-300 border border-blue-500/30 hover:bg-blue-500/30"
-                      title={`Baixa a foto como ${func.id}.jpg — coloque em public/fotos/`}
-                    >
-                      ⬇ Baixar foto
-                    </button>
-                    <button
-                      onClick={() => onChange({ ...func, foto: undefined })}
-                      className="text-xs px-3 py-1.5 rounded-lg bg-gray-700 text-gray-300 hover:bg-gray-600"
-                    >
-                      Remover foto
-                    </button>
-                  </>
+                  <button
+                    onClick={() => onChange({ ...func, foto: undefined })}
+                    className="text-xs px-3 py-1.5 rounded-lg bg-gray-700 text-gray-300 hover:bg-gray-600"
+                  >
+                    Remover foto
+                  </button>
                 )}
               </div>
             </>
@@ -293,3 +279,45 @@ export default function AdminRow({ func, onChange, onDelete }: Props) {
 
 // helper exportado
 export { novoId };
+
+// Comprime e redimensiona imagem para JPEG antes de salvar
+async function comprimirImagem(
+  file: File,
+  maxDimensao = 400,
+  qualidade = 0.85
+): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const img = new window.Image();
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      img.src = e.target?.result as string;
+    };
+    img.onload = () => {
+      // Calcula novas dimensões mantendo proporção
+      let { width, height } = img;
+      if (width > height && width > maxDimensao) {
+        height = (height * maxDimensao) / width;
+        width = maxDimensao;
+      } else if (height > maxDimensao) {
+        width = (width * maxDimensao) / height;
+        height = maxDimensao;
+      }
+      // Desenha no canvas
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) {
+        reject("Canvas não suportado");
+        return;
+      }
+      ctx.drawImage(img, 0, 0, width, height);
+      // Converte para JPEG (sempre, pra ter tamanho consistente)
+      const dataUrl = canvas.toDataURL("image/jpeg", qualidade);
+      resolve(dataUrl);
+    };
+    img.onerror = () => reject("Erro ao carregar imagem");
+    reader.onerror = () => reject("Erro ao ler arquivo");
+    reader.readAsDataURL(file);
+  });
+}

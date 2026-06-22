@@ -331,17 +331,10 @@ function AdminConteudo() {
             <div>
               <p className="font-bold text-ponsse-yellow mb-1">📷 Foto</p>
               <p className="text-gray-300">
-                Envie uma foto pelo &quot;Trocar foto&quot;. Ela fica salva neste
-                navegador. Para que apareça em todos os dispositivos, use
-                &quot;⬇ Baixar foto&quot;, mova o arquivo para{" "}
-                <code className="bg-black/40 px-1.5 py-0.5 rounded text-xs">
-                  public/fotos/
-                </code>{" "}
-                do projeto e edite o campo Foto para{" "}
-                <code className="bg-black/40 px-1.5 py-0.5 rounded text-xs">
-                  /fotos/1.jpg
-                </code>
-                .
+                Envie uma foto pelo &quot;📷 Trocar foto&quot;. Ela é
+                automaticamente compactada e salva no banco (Upstash) junto com
+                os outros dados. Aparece para todos os clientes em todos os
+                dispositivos.
               </p>
             </div>
             <div>
