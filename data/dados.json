@@ -6,9 +6,9 @@
       "setor": "Ponsse",
       "telefone": "+55 73 9831-6864",
       "ativo": true,
-      "visivel": true,
+      "visivel": false,
       "horarioInicio": "08:00",
-      "horarioFim": "18:00"
+      "horarioFim": "23:48"
     },
     {
       "id": "2",
@@ -18,7 +18,7 @@
       "ativo": true,
       "visivel": true,
       "horarioInicio": "08:00",
-      "horarioFim": "18:00"
+      "horarioFim": "23:00"
     },
     {
       "id": "3",
@@ -28,7 +28,7 @@
       "ativo": true,
       "visivel": true,
       "horarioInicio": "08:00",
-      "horarioFim": "18:00"
+      "horarioFim": "23:00"
     },
     {
       "id": "4",
@@ -46,9 +46,19 @@
       "setor": "Almoxarifado",
       "telefone": "+55 11 91027-7752",
       "ativo": true,
-      "visivel": false,
+      "visivel": true,
       "horarioInicio": "08:00",
       "horarioFim": "18:00"
+    },
+    {
+      "id": "mqoj8gd2ozrru",
+      "nome": "ANDERSON",
+      "setor": "Logística",
+      "telefone": "5514991291256",
+      "ativo": true,
+      "visivel": true,
+      "horarioInicio": "08:00",
+      "horarioFim": "23:59"
     }
   ],
   "setores": [
