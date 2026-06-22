@@ -46,7 +46,7 @@
       "setor": "Almoxarifado",
       "telefone": "+55 11 91027-7752",
       "ativo": true,
-      "visivel": false,
+      "visivel": true,
       "horarioInicio": "08:00",
       "horarioFim": "18:00"
     },
