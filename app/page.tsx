@@ -3,12 +3,13 @@
 import { useEffect, useState } from "react";
 import Header from "@/components/Header";
 import FuncionarioCard from "@/components/FuncionarioCard";
-import { Funcionario } from "@/lib/types";
+import { Config, CONFIG_PADRAO, Funcionario } from "@/lib/types";
 import { carregarDados } from "@/lib/api";
 
 export default function Home() {
   const [funcionarios, setFuncionarios] = useState<Funcionario[]>([]);
   const [setoresAdmin, setSetoresAdmin] = useState<string[]>([]);
+  const [config, setConfig] = useState<Config>(CONFIG_PADRAO);
   const [agora, setAgora] = useState<Date | null>(null);
   const [carregado, setCarregado] = useState(false);
   const [atualizando, setAtualizando] = useState(false);
@@ -19,6 +20,7 @@ export default function Home() {
     const dados = await carregarDados();
     setFuncionarios(dados.funcionarios);
     setSetoresAdmin(dados.setores);
+    setConfig(dados.config || CONFIG_PADRAO);
     setCarregado(true);
     setUltimaAtualizacao(new Date());
     if (!silencioso) {
@@ -175,6 +177,7 @@ export default function Home() {
                 func={func}
                 agora={agora || new Date()}
                 setoresDisponiveis={setoresDisponiveis}
+                config={config}
               />
             ))}
           </div>

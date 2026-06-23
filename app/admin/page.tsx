@@ -4,11 +4,12 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Header from "@/components/Header";
 import AdminRow from "@/components/AdminRow";
 import SetoresManager from "@/components/SetoresManager";
+import ConfigAtendimento from "@/components/ConfigAtendimento";
 import AdminLogin, {
   verificarAutenticado,
   logout,
 } from "@/components/AdminLogin";
-import { Funcionario } from "@/lib/types";
+import { Config, CONFIG_PADRAO, Funcionario } from "@/lib/types";
 import { novoId } from "@/lib/funcionarios";
 import { carregarDados, salvarDados } from "@/lib/api";
 
@@ -39,6 +40,7 @@ export default function AdminPage() {
 function AdminConteudo() {
   const [lista, setLista] = useState<Funcionario[]>([]);
   const [setores, setSetores] = useState<string[]>([]);
+  const [config, setConfig] = useState<Config>(CONFIG_PADRAO);
   const [carregado, setCarregado] = useState(false);
   const [novo, setNovo] = useState({
     nome: "",
@@ -56,9 +58,14 @@ function AdminConteudo() {
 
   // Referências pros timers de debounce
   const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const dadosRef = useRef<{ funcionarios: Funcionario[]; setores: string[] }>({
+  const dadosRef = useRef<{
+    funcionarios: Funcionario[];
+    setores: string[];
+    config: Config;
+  }>({
     funcionarios: [],
     setores: [],
+    config: CONFIG_PADRAO,
   });
 
   useEffect(() => {
@@ -66,7 +73,13 @@ function AdminConteudo() {
       const dados = await carregarDados();
       setLista(dados.funcionarios);
       setSetores(dados.setores);
-      dadosRef.current = { funcionarios: dados.funcionarios, setores: dados.setores };
+      const cfg = dados.config || CONFIG_PADRAO;
+      setConfig(cfg);
+      dadosRef.current = {
+        funcionarios: dados.funcionarios,
+        setores: dados.setores,
+        config: cfg,
+      };
       setCarregado(true);
     }
     carregar();
@@ -98,6 +111,12 @@ function AdminConteudo() {
   function atualizarSetoresLocal(novos: string[]) {
     setSetores(novos);
     dadosRef.current = { ...dadosRef.current, setores: novos };
+    agendarSalvamento();
+  }
+
+  function atualizarConfig(nova: Config) {
+    setConfig(nova);
+    dadosRef.current = { ...dadosRef.current, config: nova };
     agendarSalvamento();
   }
 
@@ -378,6 +397,8 @@ function AdminConteudo() {
         )}
 
         {/* Gerenciador de setores */}
+        <ConfigAtendimento config={config} onChange={atualizarConfig} />
+
         <SetoresManager setores={setores} onChange={atualizarSetores} />
 
         {/* Adicionar novo */}

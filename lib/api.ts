@@ -1,9 +1,10 @@
-import { Funcionario } from "./types";
+import { Config, Funcionario } from "./types";
 
 type DadosAPI = {
   funcionarios: Funcionario[];
   setores: string[];
-  origem?: "github" | "iniciais";
+  config?: Config;
+  origem?: "upstash" | "iniciais";
 };
 
 const ENDPOINT = "/api/dados";
@@ -14,7 +15,6 @@ export async function carregarDados(): Promise<DadosAPI> {
     if (!res.ok) throw new Error("Falha ao carregar");
     return (await res.json()) as DadosAPI;
   } catch {
-    // Em dev local sem nada configurado, retorna vazio
     return { funcionarios: [], setores: [], origem: "iniciais" };
   }
 }
@@ -22,6 +22,7 @@ export async function carregarDados(): Promise<DadosAPI> {
 export async function salvarDados(dados: {
   funcionarios: Funcionario[];
   setores: string[];
+  config?: Config;
 }): Promise<{ ok: boolean; error?: string }> {
   try {
     const res = await fetch(ENDPOINT, {

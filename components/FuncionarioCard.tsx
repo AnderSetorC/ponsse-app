@@ -2,11 +2,12 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { Funcionario } from "@/lib/types";
+import { Config, Funcionario } from "@/lib/types";
 import {
   corAvatar,
   estaDisponivel,
   getIniciais,
+  telefoneParaWaLink,
 } from "@/lib/funcionarios";
 import MensagemModal from "./MensagemModal";
 
@@ -14,17 +15,31 @@ export default function FuncionarioCard({
   func,
   agora,
   setoresDisponiveis,
+  config,
 }: {
   func: Funcionario;
   agora: Date;
   setoresDisponiveis: string[];
+  config: Config;
 }) {
   const disponivel = estaDisponivel(func, agora);
   const [modalAberto, setModalAberto] = useState(false);
 
+  function irDiretoWhatsApp() {
+    const mensagem = config.mensagemPadrao || "Olá!";
+    const url = `${telefoneParaWaLink(func.telefone)}?text=${encodeURIComponent(
+      mensagem
+    )}`;
+    window.open(url, "_blank", "noopener,noreferrer");
+  }
+
   function handleClick() {
     if (!disponivel) return;
-    setModalAberto(true);
+    if (config.modalHabilitado) {
+      setModalAberto(true);
+    } else {
+      irDiretoWhatsApp();
+    }
   }
 
   return (
@@ -98,7 +113,11 @@ export default function FuncionarioCard({
                 : "bg-gray-700 text-gray-400 cursor-not-allowed"
             }`}
           >
-            {disponivel ? "Falar agora" : "Indisponível"}
+            {disponivel
+              ? config.modalHabilitado
+                ? "Falar agora"
+                : "WhatsApp"
+              : "Indisponível"}
           </div>
 
           {/* Telefone - só no tablet+ */}

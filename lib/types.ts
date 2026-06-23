@@ -10,8 +10,19 @@ export type Funcionario = {
   horarioFim: string; // "17:00"
 };
 
+export type Config = {
+  modalHabilitado: boolean; // se true, mostra o modal com setor+resumo
+  mensagemPadrao: string; // mensagem usada quando o modal está desativado
+};
+
+export const CONFIG_PADRAO: Config = {
+  modalHabilitado: false, // padrão: manda direto com mensagem simples
+  mensagemPadrao: "Olá, vim pelo aplicativo de atendimento Ponsse!",
+};
+
 export const STORAGE_KEY = "ponsse-funcionarios-v1";
 export const SETORES_KEY = "ponsse-setores-v1";
+export const CONFIG_KEY = "ponsse-config-v1";
 
 export const setoresDefault = [
   "Comercial",

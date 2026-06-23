@@ -1,6 +1,8 @@
 import { Redis } from "@upstash/redis";
 import { NextResponse } from "next/server";
 import {
+  Config,
+  CONFIG_PADRAO,
   Funcionario,
   funcionariosIniciais,
   setoresDefault,
@@ -13,14 +15,14 @@ const KEY = "ponsse:dados";
 type Dados = {
   funcionarios: Funcionario[];
   setores: string[];
+  config?: Config;
 };
 
 function getRedis() {
-  // Usa REST API explicitamente (não TCP, que não funciona no Vercel)
   const url = process.env.UPSTASH_REDIS_REST_URL;
   const token = process.env.UPSTASH_REDIS_REST_TOKEN;
   if (!url || !token) {
-    throw new Error("UPSTASH_REDIS_REST_URL e UPSTASH_REDIS_REST_TOKEN são obrigatórios");
+    throw new Error("UPSTASH_REDIS_REST_URL e UPSTASH_REDIS_TOKEN são obrigatórios");
   }
   return new Redis({ url, token });
 }
@@ -34,6 +36,7 @@ export async function GET() {
       return NextResponse.json({
         funcionarios: dados.funcionarios,
         setores: dados.setores || setoresDefault,
+        config: dados.config || CONFIG_PADRAO,
         origem: "upstash",
       });
     }
@@ -42,6 +45,7 @@ export async function GET() {
     const iniciais: Dados = {
       funcionarios: funcionariosIniciais,
       setores: setoresDefault,
+      config: CONFIG_PADRAO,
     };
     await redis.set(KEY, iniciais);
     return NextResponse.json({
@@ -64,6 +68,7 @@ export async function POST(req: Request) {
     const novosDados: Dados = {
       funcionarios: body.funcionarios || [],
       setores: body.setores || setoresDefault,
+      config: body.config || CONFIG_PADRAO,
     };
 
     // PROTEÇÃO: se a nova lista vier vazia mas a anterior tem dados, recusa
